@@ -39,4 +39,19 @@ public class History {
         this.result = result;
         this.customer = customer;
     }
+
+     public void simpanHistory() {
+        System.out.println("History disimpan: " + result + " pada " + decisionDate);
+    }
+ 
+    public void tampilkanHistory() {
+        System.out.println("ID      : " + id);
+        System.out.println("Tanggal : " + decisionDate);
+        System.out.println("Hasil   : " + result);
+    }
+ 
+    public void hapusHistory() {
+        System.out.println("History dihapus: " + id);
+    }
+    
 }
