@@ -44,4 +44,20 @@ public class Wishlist {
         this.customer = customer;
         this.item = item;
     }
+
+    public void tambahWishlist() {
+        System.out.println("Item ditambahkan ke wishlist: " + (item != null ? item.getNamaBarang() : id));
+    }
+ 
+    public void hapusWishlist() {
+        System.out.println("Item dihapus dari wishlist: " + id);
+    }
+ 
+    public void tampilkanWishlist() {
+        System.out.println("ID      : " + id);
+        System.out.println("Tanggal : " + date);
+        System.out.println("Status  : " + status);
+        System.out.println("Item    : " + (item != null ? item.getNamaBarang() : "-"));
+    }
+    
 }
