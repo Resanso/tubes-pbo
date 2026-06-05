@@ -31,4 +31,18 @@ public class Category {
     public Category(String name) {
         this.name = name;
     }
+
+      public void tambahKategori() {
+        System.out.println("Kategori ditambahkan: " + name);
+    }
+ 
+    public void ubahKategori(String namaBaru) {
+        System.out.println("Kategori diubah: " + name + " -> " + namaBaru);
+        this.name = namaBaru;
+    }
+ 
+    public void hapusKategori() {
+        System.out.println("Kategori dihapus: " + name);
+    }
+    
 }
