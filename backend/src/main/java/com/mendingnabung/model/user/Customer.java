@@ -3,6 +3,7 @@ package com.mendingnabung.model.user;
 import com.mendingnabung.model.History;
 import com.mendingnabung.model.Savings;
 import com.mendingnabung.model.Wishlist;
+import com.mendingnabung.model.item.Item;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
 import lombok.Getter;
@@ -10,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,9 +47,33 @@ public class Customer extends User {
         this.monthlyIncome = monthlyIncome;
     }
 
+    public Wishlist inputBarang(Item item) {
+        if (item == null) {
+            throw new IllegalArgumentException("Item tidak boleh null");
+        }
+
+        Wishlist wishlist = new Wishlist(LocalDate.now(), this, item);
+        this.wishlists.add(wishlist);
+        return wishlist;
+    }
+
+    public Wishlist tambahWishlist(Item item) {
+        Wishlist wishlist = inputBarang(item);
+        System.out.println("Item ditambahkan ke wishlist: " + item.getName());
+        return wishlist;
+    }
+
+    public void lihatHistory() {
+        if (histories.isEmpty()) {
+            System.out.println("Belum ada history untuk customer: " + getUsername());
+            return;
+        }
+
+        histories.forEach(History::tampilkanHistory);
+    }
+
     @Override
     public String getRole() {
-        // TODO: To be implemented by team
-        return null;
+        return "CUSTOMER";
     }
 }
