@@ -39,4 +39,16 @@ public abstract class User {
 
     /** Returns the role label used for authorization checks. */
     public abstract String getRole();
+
+    public boolean login(String username, String password) {
+        if (this.username.equals(username) && this.password.equals(password)) {
+            System.out.println("user " + username + " berhasil login.");
+            return true;
+        }
+        System.out.println("Login gagal: username atau password salah.");
+        return false;
+    }
+    public void logout() {
+        System.out.println("user " + this.username + " berhasil logout.");
+    }
 }
