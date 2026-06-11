@@ -22,7 +22,6 @@ public class History {
     @Column(name = "decision_date", nullable = false)
     private LocalDate decisionDate;
 
-    /** Free-text summary of the decision outcome. */
     @Column(nullable = false, length = 500)
     private String result;
 
@@ -40,18 +39,21 @@ public class History {
         this.customer = customer;
     }
 
-     public void simpanHistory() {
+    public void simpanHistory() {
+        this.decisionDate = (this.decisionDate != null) ? this.decisionDate : LocalDate.now();
         System.out.println("History disimpan: " + result + " pada " + decisionDate);
     }
- 
+
     public void tampilkanHistory() {
         System.out.println("ID      : " + id);
         System.out.println("Tanggal : " + decisionDate);
         System.out.println("Hasil   : " + result);
+        System.out.println("Customer: " + (customer != null ? customer.getUsername() : "-"));
     }
- 
+
     public void hapusHistory() {
-        System.out.println("History dihapus: " + id);
+        System.out.println("History dengan ID " + id + " berhasil dihapus.");
+        this.result = null;
+        this.decisionDate = null;
     }
-    
 }
