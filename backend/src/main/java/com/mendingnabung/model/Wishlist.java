@@ -54,7 +54,7 @@ public class Wishlist {
 
     public void hapusWishlist() {
         System.out.println("Item '" + (item != null ? item.getName() : "-")
-                + "' dengan ID " + id + " dihapus dari wishlist.");
+                + "' dengan ID " + id + " di hapus dari wishlist.");
         this.status = Status.REJECTED;
     }
 
