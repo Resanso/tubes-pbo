@@ -46,18 +46,23 @@ public class Wishlist {
     }
 
     public void tambahWishlist() {
-        System.out.println("Item ditambahkan ke wishlist: " + (item != null ? item.getNamaBarang() : id));
+        this.date = (this.date != null) ? this.date : LocalDate.now();
+        this.status = Status.PENDING;
+        System.out.println("Item ditambahkan ke wishlist: " + (item != null ? item.getName() : "-")
+                + " pada " + date);
     }
- 
+
     public void hapusWishlist() {
-        System.out.println("Item dihapus dari wishlist: " + id);
+        System.out.println("Item '" + (item != null ? item.getName() : "-")
+                + "' dengan ID " + id + " di hapus dari wishlist.");
+        this.status = Status.REJECTED;
     }
- 
+
     public void tampilkanWishlist() {
         System.out.println("ID      : " + id);
         System.out.println("Tanggal : " + date);
         System.out.println("Status  : " + status);
-        System.out.println("Item    : " + (item != null ? item.getNamaBarang() : "-"));
+        System.out.println("Item    : " + (item != null ? item.getName() : "-"));
+        System.out.println("Customer: " + (customer != null ? customer.getUsername() : "-"));
     }
-    
 }

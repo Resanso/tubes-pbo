@@ -32,17 +32,17 @@ public class Category {
         this.name = name;
     }
 
-      public void tambahKategori() {
-        System.out.println("Kategori ditambahkan: " + name);
+    public void tambahKategori() {
+        System.out.println("Kategori berhasil ditambahkan: " + name);
     }
- 
+
     public void ubahKategori(String namaBaru) {
         System.out.println("Kategori diubah: " + name + " -> " + namaBaru);
         this.name = namaBaru;
     }
- 
+
     public void hapusKategori() {
-        System.out.println("Kategori dihapus: " + name);
+        System.out.println("Kategori '" + name + "' berhasil dihapus.");
+        this.name = null;
     }
-    
 }
