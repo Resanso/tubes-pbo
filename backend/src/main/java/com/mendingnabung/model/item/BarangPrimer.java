@@ -23,13 +23,21 @@ public class BarangPrimer extends Item {
 
     @Override
     public double calculateRegretScore() {
-        // TODO: To be implemented by team
-        return 0;
+        // Barang primer = kebutuhan pokok, skor penyesalan sangat tinggi jika tidak dibeli
+        // Formula: urgency * 20 (skala 0-100)
+        return getUrgency() * 20.0;
     }
 
     @Override
     public String getPriorityLabel() {
-        // TODO: To be implemented by team
-        return null;
+        return "Kebutuhan Pokok";
+    }
+
+    public double hitungPenyesalan() {
+        return calculateRegretScore();
+    }
+
+    public String tampilkanSaran() {
+        return getPriorityLabel();
     }
 }
