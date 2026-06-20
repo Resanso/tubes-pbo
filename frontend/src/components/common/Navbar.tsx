@@ -44,6 +44,9 @@ const Navbar: React.FC = () => {
         <NavLink to="/history" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
           Riwayat
         </NavLink>
+        <NavLink to="/add-item" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
+          + Tambah Barang
+        </NavLink>
       </div>
 
       <div className="nav-profile">
