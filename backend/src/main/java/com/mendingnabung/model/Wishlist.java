@@ -1,5 +1,6 @@
 package com.mendingnabung.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mendingnabung.model.item.Item;
 import com.mendingnabung.model.user.Customer;
 import jakarta.persistence.*;
@@ -31,6 +32,7 @@ public class Wishlist {
     @Column(nullable = false, length = 20)
     private Status status = Status.PENDING;
 
+    @JsonIgnore // cegah serialisasi circular / lazy proxy Customer ke JSON
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "customer_id", nullable = false)
     private Customer customer;

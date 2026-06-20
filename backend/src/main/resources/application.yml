@@ -3,11 +3,9 @@ spring:
     name: mending-nabung
 
   datasource:
-    # Neon DB connection — set these environment variables in your shell or .env
-    # Format: jdbc:postgresql://<host>/<dbname>?sslmode=require
-    url: ${DATABASE_URL}
-    username: ${DATABASE_USERNAME}
-    password: ${DATABASE_PASSWORD}
+    url: jdbc:postgresql://ep-quiet-rice-aojdwxuh-pooler.c-2.ap-southeast-1.aws.neon.tech/neondb?sslmode=require
+    username: neondb_owner
+    password: npg_PEBj3Te2Izkm
     driver-class-name: org.postgresql.Driver
     hikari:
       # Neon DB hibernates idle connections; keep pool small
@@ -31,9 +29,10 @@ spring:
     open-in-view: false
 
 server:
-  port: 8080
+  port: 8083
   error:
     include-message: always
+  max-http-request-header-size: 48KB
 
 # CORS — allows the Vite dev server to reach the backend
 app:

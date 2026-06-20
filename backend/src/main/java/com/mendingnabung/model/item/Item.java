@@ -59,4 +59,23 @@ public abstract class Item {
      * Returns a human-readable priority label for this item type.
      */
     public abstract String getPriorityLabel();
+
+    /**
+     * Menghitung nilai penyesalan berdasarkan peluang menyesal jika tidak membeli.
+     */
+    public double hitungPenyesalan() {
+        return calculateRegretScore();
+    }
+
+    /**
+     * Menyajikan saran pembelian dalam format yang mudah dibaca.
+     */
+    public String tampilkanSaran() {
+        double penyesalan = hitungPenyesalan();
+        return String.format("%s - %s: urgensi %d, skor penyesalan %.2f",
+                this.name,
+                getPriorityLabel(),
+                this.urgency,
+                penyesalan);
+    }
 }
