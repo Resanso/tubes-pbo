@@ -98,7 +98,8 @@ const DecisionPage: React.FC = () => {
 
         {/* Tombol evaluasi aktif hanya saat item sudah dipilih */}
         <button
-          className="btn-primary"
+          className="btn btn-primary"
+          style={{ marginTop: '1rem', width: '100%' }}
           onClick={handleEvaluasi}
           disabled={!selectedItemId || isPending}
         >
