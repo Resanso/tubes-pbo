@@ -50,7 +50,7 @@ public class Wishlist {
     public void tambahWishlist() {
         this.date = (this.date != null) ? this.date : LocalDate.now();
         this.status = Status.PENDING;
-        System.out.println("Item ditambahkan ke wishlist: " + (item != null ? item.getName() : "-")
+        System.out.println("Item ditambahkan ke wishlist: " + (item != null ? item.getName() : id)
                 + " pada " + date);
     }
 
@@ -60,7 +60,7 @@ public class Wishlist {
         this.status = Status.REJECTED;
     }
 
-    public void tampilkanWishlist() {
+        public void tampilkanWishlist() {
         System.out.println("ID      : " + id);
         System.out.println("Tanggal : " + date);
         System.out.println("Status  : " + status);
@@ -68,3 +68,4 @@ public class Wishlist {
         System.out.println("Customer: " + (customer != null ? customer.getUsername() : "-"));
     }
 }
+

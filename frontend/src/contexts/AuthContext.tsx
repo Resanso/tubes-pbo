@@ -12,17 +12,30 @@ interface AuthContextValue {
 const AuthContext = createContext<AuthContextValue | null>(null);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [token, setToken] = useState<string | null>(() => localStorage.getItem('token'));
-  const [customer, setCustomer] = useState<Customer | null>(null);
+  const [token, setToken] = useState<string | null>(() => localStorage.getItem('token') || 'mock-jwt-token');
+  const [customer, setCustomer] = useState<Customer | null>(() => {
+    const saved = localStorage.getItem('customer');
+    if (saved) return JSON.parse(saved);
+    // Mock user fallback agar Dashboard langsung terlihat saat pengembangan
+    return {
+      id: 1,
+      username: 'Ridwan Faiz H',
+      role: 'CUSTOMER',
+      balance: 15000000,
+      monthlyIncome: 5000000,
+    };
+  });
 
   const login = (newToken: string, newCustomer: Customer) => {
     localStorage.setItem('token', newToken);
+    localStorage.setItem('customer', JSON.stringify(newCustomer));
     setToken(newToken);
     setCustomer(newCustomer);
   };
 
   const logout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('customer');
     setToken(null);
     setCustomer(null);
   };
