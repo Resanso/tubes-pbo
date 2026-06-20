@@ -11,6 +11,10 @@ logs/
 backend/target/
 backend/.mvn/wrapper/maven-wrapper.jar
 !backend/.mvn/wrapper/maven-wrapper.properties
+# Local-only files for testing — never commit
+backend/src/main/java/com/mendingnabung/config/SecurityConfig.java
+backend/src/main/java/com/mendingnabung/config/DataSeeder.java
+backend/src/main/java/com/mendingnabung/config/JacksonConfig.java
 
 # ── Frontend ──────────────────────────────────────────────────────────────────
 frontend/node_modules/
