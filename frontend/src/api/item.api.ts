@@ -1,5 +1,5 @@
 import apiClient from './axios.config';
-import type { Item, WishlistItem } from '@/types/item.types';
+import type { Category, CreateItemRequest, Item, WishlistItem } from '@/types/item.types';
 
 export const itemApi = {
   getAll: () =>
@@ -10,6 +10,14 @@ export const itemApi = {
 
   search: (keyword: string) =>
     apiClient.get<Item[]>('/items/search', { params: { q: keyword } }).then((r) => r.data),
+
+  create: (data: CreateItemRequest) =>
+    apiClient.post<Item>('/items', data).then((r) => r.data),
+};
+
+export const categoryApi = {
+  getAll: () =>
+    apiClient.get<Category[]>('/categories').then((r) => r.data),
 };
 
 export const wishlistApi = {

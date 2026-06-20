@@ -1,5 +1,7 @@
 package com.mendingnabung.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.mendingnabung.model.item.Item;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -10,6 +12,7 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
 
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Getter
 @Setter
 @NoArgsConstructor
@@ -25,6 +28,7 @@ public class Category {
     @Column(nullable = false, unique = true, length = 100)
     private String name;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
     private List<Item> items = new ArrayList<>();
 

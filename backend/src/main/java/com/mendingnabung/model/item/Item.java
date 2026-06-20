@@ -1,5 +1,6 @@
 package com.mendingnabung.model.item;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.mendingnabung.model.Category;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
@@ -14,6 +15,7 @@ import java.math.BigDecimal;
  * Abstract base class for all purchasable items.
  * Urgency scale: 1 (lowest) – 5 (highest).
  */
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Getter
 @Setter
 @NoArgsConstructor

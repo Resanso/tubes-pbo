@@ -14,7 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/wishlists")
@@ -48,9 +50,9 @@ public class WishlistController {
     }
 
     // POST /api/wishlists — frontend mengirim { customerId, itemId }
+    // Return Map agar tidak bergantung pada Hibernate proxy serialization
     @PostMapping
-    public ResponseEntity<Wishlist> add(@RequestBody AddRequest req) {
-        // Modul 9: try-catch untuk menangani customer/item tidak ditemukan
+    public ResponseEntity<Map<String, Object>> add(@RequestBody AddRequest req) {
         try {
             var customer = customerRepository.findById(req.getCustomerId()).orElseThrow(
                 () -> new IllegalArgumentException("Customer tidak ditemukan")
@@ -61,7 +63,40 @@ public class WishlistController {
 
             Wishlist wishlist = new Wishlist(LocalDate.now(), customer, item);
             wishlist.tambahWishlist();
-            return ResponseEntity.ok(wishlistRepository.save(wishlist));
+            Wishlist saved = wishlistRepository.save(wishlist);
+
+            // Re-fetch dengan JOIN FETCH agar category ter-load dalam session yang sama
+            Wishlist full = entityManager.createQuery(
+                    "SELECT w FROM Wishlist w " +
+                    "LEFT JOIN FETCH w.item i " +
+                    "LEFT JOIN FETCH i.category " +
+                    "WHERE w.id = :id", Wishlist.class)
+                    .setParameter("id", saved.getId())
+                    .getSingleResult();
+
+            // Map manual ke struktur WishlistItem yang diharapkan frontend
+            var itemObj = full.getItem();
+            Map<String, Object> categoryMap = new LinkedHashMap<>();
+            if (itemObj.getCategory() != null) {
+                categoryMap.put("id", itemObj.getCategory().getId());
+                categoryMap.put("name", itemObj.getCategory().getName());
+            }
+            Map<String, Object> itemMap = new LinkedHashMap<>();
+            itemMap.put("id", itemObj.getId());
+            itemMap.put("name", itemObj.getName());
+            itemMap.put("price", itemObj.getPrice());
+            itemMap.put("urgency", itemObj.getUrgency());
+            itemMap.put("itemType", itemObj.getClass().getSimpleName().replace("Barang", "").toUpperCase());
+            itemMap.put("priorityLabel", itemObj.getPriorityLabel());
+            itemMap.put("category", categoryMap);
+
+            Map<String, Object> result = new LinkedHashMap<>();
+            result.put("id", full.getId());
+            result.put("date", full.getDate().toString());
+            result.put("status", full.getStatus().name());
+            result.put("item", itemMap);
+            return ResponseEntity.ok(result);
+
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();
         }
