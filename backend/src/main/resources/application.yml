@@ -3,9 +3,9 @@ spring:
     name: mending-nabung
 
   datasource:
-    url: jdbc:postgresql://ep-quiet-rice-aojdwxuh-pooler.c-2.ap-southeast-1.aws.neon.tech/neondb?sslmode=require
-    username: neondb_owner
-    password: npg_PEBj3Te2Izkm
+    url: ${DATABASE_URL:jdbc:postgresql://ep-quiet-rice-aojdwxuh-pooler.c-2.ap-southeast-1.aws.neon.tech/neondb?sslmode=require}
+    username: ${DATABASE_USERNAME:neondb_owner}
+    password: ${DATABASE_PASSWORD:npg_PEBj3Te2Izkm}
     driver-class-name: org.postgresql.Driver
     hikari:
       # Neon DB hibernates idle connections; keep pool small
