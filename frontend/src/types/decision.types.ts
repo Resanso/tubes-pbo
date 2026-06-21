@@ -11,6 +11,7 @@ export interface DecisionResponse {
   regretScore: number;
   remainingBalance: number;
   advice: string;
+  savingsPlan?: SavingsPlan;
 }
 
 export interface SavingsPlan {

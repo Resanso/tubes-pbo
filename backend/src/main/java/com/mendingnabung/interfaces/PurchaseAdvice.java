@@ -4,19 +4,13 @@ import com.mendingnabung.model.PurchaseDecision;
 import com.mendingnabung.model.item.Item;
 import com.mendingnabung.model.user.Customer;
 
-/**
- * Contract for any component that can produce a purchase recommendation.
- * Abstraction layer — the controller depends on this interface, not on the concrete service.
- */
+// Modul 6: Interface — mendefinisikan kontrak method yang harus diimplementasikan kelas lain
+// Konsep: abstraction layer, controller bergantung pada interface ini, bukan class konkretnya
 public interface PurchaseAdvice {
 
-    /**
-     * Analyses the customer's financial state against the requested item
-     * and produces a {@link PurchaseDecision}.
-     *
-     * @param customer the customer requesting advice
-     * @param item     the item under consideration
-     * @return a fully populated PurchaseDecision (BELI or NABUNG)
-     */
+    // Kontrak 1: menganalisis kondisi keuangan dan menghasilkan keputusan BELI atau NABUNG
     PurchaseDecision giveAdvice(Customer customer, Item item);
+
+    // Kontrak 2: menghasilkan saran dalam bentuk teks yang mudah dibaca oleh user
+    String beriSaran(Customer customer, Item item);
 }

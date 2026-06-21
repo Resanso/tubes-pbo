@@ -1,5 +1,13 @@
 export type ItemType = 'PRIMER' | 'SEKUNDER' | 'TERSIER';
 
+export interface CreateItemRequest {
+  name: string;
+  price: number;
+  urgency: number;
+  itemType: ItemType;
+  categoryId: number | null;
+}
+
 export interface Category {
   id: number;
   name: string;

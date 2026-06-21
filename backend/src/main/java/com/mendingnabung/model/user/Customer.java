@@ -1,5 +1,6 @@
 package com.mendingnabung.model.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mendingnabung.model.History;
 import com.mendingnabung.model.Savings;
 import com.mendingnabung.model.Wishlist;
@@ -32,12 +33,15 @@ public class Customer extends User {
     @Column(name = "monthly_income", nullable = false, precision = 15, scale = 2)
     private BigDecimal monthlyIncome;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Wishlist> wishlists = new ArrayList<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<History> histories = new ArrayList<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Savings> savingsList = new ArrayList<>();
 

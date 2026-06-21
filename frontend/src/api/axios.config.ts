@@ -22,11 +22,13 @@ apiClient.interceptors.request.use((config) => {
   return config;
 });
 
-// Global error handler — redirects to /login on 401
+// Global error handler — redirects to /login on 401 (skip for login/register endpoints)
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    const isAuthEndpoint = error.config?.url?.includes('/users/login') ||
+                           error.config?.url?.includes('/users/register');
+    if (error.response?.status === 401 && !isAuthEndpoint) {
       localStorage.removeItem('token');
       window.location.href = '/login';
     }

@@ -7,6 +7,7 @@ import DashboardPage from './pages/DashboardPage';
 import WishlistPage from './pages/WishlistPage';
 import DecisionPage from './pages/DecisionPage';
 import HistoryPage from './pages/HistoryPage';
+import AddItemPage from './pages/AddItemPage';
 import Navbar from './components/common/Navbar';
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
@@ -27,6 +28,7 @@ const App: React.FC = () => {
         <Route path="/wishlist" element={<PrivateRoute><WishlistPage /></PrivateRoute>} />
         <Route path="/decision" element={<PrivateRoute><DecisionPage /></PrivateRoute>} />
         <Route path="/history" element={<PrivateRoute><HistoryPage /></PrivateRoute>} />
+        <Route path="/add-item" element={<PrivateRoute><AddItemPage /></PrivateRoute>} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </>
