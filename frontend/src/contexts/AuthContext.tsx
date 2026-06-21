@@ -1,5 +1,6 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import type { Customer } from '@/types/user.types';
+import { userApi } from '@/api/user.api';
 
 interface AuthContextValue {
   customer: Customer | null;
@@ -12,19 +13,33 @@ interface AuthContextValue {
 const AuthContext = createContext<AuthContextValue | null>(null);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [token, setToken] = useState<string | null>(() => localStorage.getItem('token') || 'mock-jwt-token');
+  const [token, setToken] = useState<string | null>(() => localStorage.getItem('token'));
   const [customer, setCustomer] = useState<Customer | null>(() => {
-    const saved = localStorage.getItem('customer');
-    if (saved) return JSON.parse(saved);
-    // Mock user fallback agar Dashboard langsung terlihat saat pengembangan
-    return {
-      id: 1,
-      username: 'Ridwan Faiz H',
-      role: 'CUSTOMER',
-      balance: 15000000,
-      monthlyIncome: 5000000,
-    };
+    try {
+      const saved = localStorage.getItem('customer');
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      localStorage.removeItem('customer');
+      return null;
+    }
   });
+
+  // Jika token ada tapi customer hilang dari localStorage, pulihkan dari API
+  useEffect(() => {
+    if (!token || customer) return;
+    const match = token.match(/^dev-token-(\d+)$/);
+    if (!match) return;
+    const id = parseInt(match[1], 10);
+    userApi.getById(id)
+      .then((c) => {
+        setCustomer(c);
+        localStorage.setItem('customer', JSON.stringify(c));
+      })
+      .catch(() => {
+        localStorage.removeItem('token');
+        setToken(null);
+      });
+  }, [token, customer]);
 
   const login = (newToken: string, newCustomer: Customer) => {
     localStorage.setItem('token', newToken);
