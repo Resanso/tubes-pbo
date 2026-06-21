@@ -6,7 +6,7 @@
 
 Aplikasi web full-stack untuk membantu pengguna memutuskan apakah sebaiknya **membeli** suatu barang atau **menabung** terlebih dahulu, berdasarkan analisis keuangan otomatis.
 
-**Tugas Besar PBO — Telkom University Purwokerto**
+**Tugas Besar PBO — Telkom University**
 
 ---
 
