@@ -29,10 +29,12 @@ echo "============================================"
 echo " Mending Beli atau Nabung? — Dev Launcher  "
 echo "============================================"
 
-# ── Backend (Spring Boot via Maven wrapper) ────────────────────────────────────
-echo "[1/2] Starting Spring Boot backend on :8080 ..."
+# ── Backend (Spring Boot via Maven wrapper or system mvn) ──────────────────────
+echo "[1/2] Starting Spring Boot backend on :8083 ..."
 cd "$BACKEND_DIR"
-./mvnw spring-boot:run \
+MVN_CMD="./mvnw"
+[[ ! -f "./mvnw" ]] && MVN_CMD="mvn"
+$MVN_CMD spring-boot:run \
   -Dspring-boot.run.jvmArguments="-Dspring.profiles.active=dev" \
   > "$LOG_DIR/backend.log" 2>&1 &
 BACKEND_PID=$!
@@ -59,6 +61,6 @@ echo "$FRONTEND_PID" > "$LOG_DIR/frontend.pid"
 echo ""
 echo "Both services started. Access the app at:"
 echo "  Frontend  →  http://localhost:5173"
-echo "  Backend   →  http://localhost:8080/api"
+echo "  Backend   →  http://localhost:8083/api"
 echo ""
 echo "Run './scripts/stop-all.sh' to stop both services."

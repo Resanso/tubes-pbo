@@ -2,6 +2,7 @@ import React from 'react';
 import type { SavingsPlan } from '@/types/decision.types';
 import { formatRupiah } from '@/utils/format.utils';
 
+// Modul 10: Komponen UI yang menerima props (seperti parameter fungsi di JavaScript)
 interface Props {
   plan: SavingsPlan;
 }
@@ -37,9 +38,9 @@ const SavingsPlanCard: React.FC<Props> = ({ plan }) => {
                 strokeLinecap="round"
                 strokeLinejoin="round"
               >
-                <circle cx="12" cy="12" r="8"></circle>
-                <line x1="12" y1="8" x2="12" y2="16"></line>
-                <line x1="8" y1="12" x2="16" y2="12"></line>
+                <circle cx="12" cy="12" r="8" />
+                <line x1="12" y1="8" x2="12" y2="16" />
+                <line x1="8" y1="12" x2="16" y2="12" />
               </svg>
             </div>
             <div style={{ fontWeight: 600, fontSize: '0.95rem' }}>Rencana Menabung</div>
