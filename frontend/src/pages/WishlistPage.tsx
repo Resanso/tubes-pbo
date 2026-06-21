@@ -3,6 +3,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { wishlistApi, itemApi } from '@/api/item.api';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { formatRupiah } from '@/utils/format.utils';
+import { Loader2, ShoppingCart } from 'lucide-react';
 
 const statusStyle: Record<string, { bg: string; text: string; border: string }> = {
   PENDING:   { bg: 'rgba(245,158,11,0.12)',  text: '#f59e0b', border: 'rgba(245,158,11,0.3)' },
@@ -78,14 +79,14 @@ const WishlistPage: React.FC = () => {
 
       {isLoading && (
         <div className="history-empty">
-          <span className="history-empty-icon">⏳</span>
+          <span className="history-empty-icon"><Loader2 size={40} className="animate-spin" /></span>
           <p className="text-muted">Memuat wishlist...</p>
         </div>
       )}
 
       {!isLoading && (!wishlist || wishlist.length === 0) && (
         <div className="history-empty">
-          <span className="history-empty-icon">🛒</span>
+          <span className="history-empty-icon"><ShoppingCart size={40} /></span>
           <p className="text-muted">Wishlist masih kosong.</p>
           <p className="text-muted" style={{ fontSize: '0.85rem', marginTop: '0.25rem' }}>
             Pilih item di atas lalu klik Tambah.

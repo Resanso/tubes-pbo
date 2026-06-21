@@ -2,6 +2,7 @@ import React from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useDecisionHistory } from '@/hooks/useDecision';
 import { formatRupiah } from '@/utils/format.utils';
+import { Loader2, AlertTriangle, Inbox, CalendarDays, Lightbulb, Check, X } from 'lucide-react';
 
 const HistoryPage: React.FC = () => {
   const { customer } = useAuth();
@@ -16,21 +17,21 @@ const HistoryPage: React.FC = () => {
 
       {isLoading && (
         <div className="history-empty">
-          <span className="history-empty-icon">⏳</span>
+          <span className="history-empty-icon"><Loader2 size={40} className="animate-spin" /></span>
           <p className="text-muted">Memuat riwayat...</p>
         </div>
       )}
 
       {isError && (
         <div className="history-empty">
-          <span className="history-empty-icon">⚠️</span>
+          <span className="history-empty-icon"><AlertTriangle size={40} /></span>
           <p className="text-error">Gagal memuat riwayat. Coba lagi nanti.</p>
         </div>
       )}
 
       {!isLoading && !isError && history?.length === 0 && (
         <div className="history-empty">
-          <span className="history-empty-icon">📭</span>
+          <span className="history-empty-icon"><Inbox size={40} /></span>
           <p className="text-muted">Belum ada riwayat keputusan.</p>
           <p className="text-muted" style={{ fontSize: '0.85rem', marginTop: '0.25rem' }}>
             Coba evaluasi item di halaman Beli vs Nabung.
@@ -51,10 +52,17 @@ const HistoryPage: React.FC = () => {
               <div className="history-card-header">
                 <div className="history-meta">
                   <span className="history-index">#{index + 1}</span>
-                  <span className="history-date">📅 {h.decisionDate}</span>
+                  <span className="history-date">
+                    <CalendarDays size={13} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '4px' }} />
+                    {h.decisionDate}
+                  </span>
                 </div>
                 <span className={`history-badge ${isBeli ? 'badge-beli' : 'badge-nabung'}`}>
-                  {isBeli ? '✓' : '✗'} {status}
+                  {isBeli
+                    ? <Check size={12} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '3px' }} />
+                    : <X size={12} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '3px' }} />
+                  }
+                  {status}
                 </span>
               </div>
 
@@ -81,7 +89,7 @@ const HistoryPage: React.FC = () => {
               {/* Saran */}
               {h.purchaseDecision?.advice && (
                 <div className="history-advice">
-                  <span className="history-advice-icon">💡</span>
+                  <span className="history-advice-icon"><Lightbulb size={16} /></span>
                   <p className="history-advice-text">{h.purchaseDecision.advice}</p>
                 </div>
               )}

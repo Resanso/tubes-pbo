@@ -931,9 +931,11 @@ a:hover {
 }
 
 .history-advice-icon {
-  font-size: 0.9rem;
   flex-shrink: 0;
   margin-top: 0.1rem;
+  color: #a78bfa;
+  width: 16px;
+  height: 16px;
 }
 
 .history-advice-text {
@@ -955,8 +957,14 @@ a:hover {
 }
 
 .history-empty-icon {
-  font-size: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
   margin-bottom: 0.5rem;
+  color: var(--text-muted);
+  opacity: 0.6;
 }
 
 /* ── Add Item form ───────────────────────────────────────────────────────── */
