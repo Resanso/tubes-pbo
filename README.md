@@ -1,8 +1,12 @@
 # Mending Beli atau Nabung? 💸
 
+<p align="center">
+  <img src="Saving Money.svg" width="300" alt="Saving Money Animation" />
+</p>
+
 Aplikasi web full-stack untuk membantu pengguna memutuskan apakah sebaiknya **membeli** suatu barang atau **menabung** terlebih dahulu, berdasarkan analisis keuangan otomatis.
 
-**Tugas Besar PBO — Institut Teknologi Telkom Purwokerto**
+**Tugas Besar PBO — Telkom University**
 
 ---
 
