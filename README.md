@@ -1,6 +1,8 @@
 # Mending Beli atau Nabung? 💸
 
-[![Lottie Animation](https://lottie.host/7b47d7e9-c664-4005-9a7c-f9bc723035cc/OWGi6nc47u.lottie)](https://lottie.host/7b47d7e9-c664-4005-9a7c-f9bc723035cc/OWGi6nc47u.lottie)
+<p align="center">
+  <iframe src="https://lottie.host/embed/7b47d7e9-c664-4005-9a7c-f9bc723035cc/OWGi6nc47u.lottie" width="300" height="300" style="border:none;"></iframe>
+</p>
 
 Aplikasi web full-stack untuk membantu pengguna memutuskan apakah sebaiknya **membeli** suatu barang atau **menabung** terlebih dahulu, berdasarkan analisis keuangan otomatis.
 
