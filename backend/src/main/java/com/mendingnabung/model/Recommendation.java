@@ -83,7 +83,8 @@ public class Recommendation {
     }
 
     // Estimasi berapa bulan yang dibutuhkan untuk menabung hingga mampu membeli
-    private int estimasiBulanNabung() {
+    // Made public so DecisionController can use this calculation
+    public int estimasiBulanNabung() {
         BigDecimal kekurangan = item.getPrice().subtract(customer.getBalance());
         if (kekurangan.compareTo(BigDecimal.ZERO) <= 0) {
             return 0;
