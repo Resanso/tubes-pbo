@@ -15,6 +15,7 @@ const DecisionPage: React.FC = () => {
 
   // Modul 10: JavaScript — variabel state untuk menyimpan pilihan user dan hasil keputusan
   const [selectedItemId, setSelectedItemId] = useState<number | null>(null);
+  const [selectedItemName, setSelectedItemName] = useState<string>('');
   const [result, setResult] = useState<DecisionResponse | null>(null);
 
   // Ambil semua item dari backend (Modul 12: JDBC Read → REST API → React Query)
@@ -41,6 +42,9 @@ const DecisionPage: React.FC = () => {
           // Simpan hasil keputusan untuk ditampilkan di DecisionResult
           setResult(data);
         },
+        onError: () => {
+          alert('Gagal mendapatkan rekomendasi. Silakan coba lagi.');
+        },
       }
     );
   };
@@ -52,6 +56,9 @@ const DecisionPage: React.FC = () => {
         {customer && (
           <p className="page-subtitle">
             Saldo kamu: <strong>{formatRupiah(customer.balance)}</strong>
+            {customer.monthlyIncome > 0 && (
+              <> · Penghasilan bulanan: <strong>{formatRupiah(customer.monthlyIncome)}</strong></>
+            )}
           </p>
         )}
       </div>
@@ -75,6 +82,7 @@ const DecisionPage: React.FC = () => {
                 onClick={() => {
                   // Pilih item dan reset hasil sebelumnya
                   setSelectedItemId(item.id);
+                  setSelectedItemName(item.name);
                   setResult(null);
                 }}
               >
@@ -103,7 +111,19 @@ const DecisionPage: React.FC = () => {
           onClick={handleEvaluasi}
           disabled={!selectedItemId || isPending}
         >
-          {isPending ? 'Menganalisis...' : 'Evaluasi Keputusan'}
+          {isPending ? (
+            <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="animate-spin">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M12 6v6l4 2" />
+              </svg>
+              Menganalisis...
+            </span>
+          ) : selectedItemName ? (
+            `Evaluasi: ${selectedItemName}`
+          ) : (
+            'Evaluasi Keputusan'
+          )}
         </button>
       </div>
 
