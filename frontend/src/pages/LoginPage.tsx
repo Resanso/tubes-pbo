@@ -15,19 +15,19 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="login-page">
-      <div className="login-container">
-        {/* Brand Header */}
-        <div className="login-brand">
-          <div className="login-logo">
+    <div className="lp-root">
+      <div className="lp-card">
+        {/* Brand */}
+        <div className="lp-brand">
+          <div className="lp-icon">
             <PiggyBank size={40} strokeWidth={1.5} />
           </div>
-          <h1 className="login-title">Mending Nabung</h1>
-          <p className="login-subtitle">Masuk untuk melanjutkan</p>
+          <h1 className="lp-title">Mending Nabung</h1>
+          <p className="lp-sub">Masuk untuk melanjutkan</p>
         </div>
 
-        {/* Login Form */}
-        <form onSubmit={handleSubmit} className="login-form">
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="lp-form">
           <div className="input-group">
             <label className="input-label">
               <User size={14} />
@@ -49,9 +49,9 @@ const LoginPage: React.FC = () => {
               <Lock size={14} />
               Password
             </label>
-            <div className="password-wrapper">
+            <div className="pw-wrap">
               <input
-                className="input-control password-input"
+                className="input-control pw-input"
                 type={showPassword ? 'text' : 'password'}
                 placeholder="Masukkan password"
                 value={form.password}
@@ -60,8 +60,8 @@ const LoginPage: React.FC = () => {
               />
               <button
                 type="button"
-                className="password-toggle"
-                onClick={() => setShowPassword(!showPassword)}
+                className="pw-toggle"
+                onClick={() => setShowPassword(prev => !prev)}
                 tabIndex={-1}
               >
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
@@ -70,7 +70,7 @@ const LoginPage: React.FC = () => {
           </div>
 
           {error && (
-            <div className="login-error">
+            <div className="lp-error">
               <span>Login gagal. Periksa username/password.</span>
             </div>
           )}
@@ -78,11 +78,11 @@ const LoginPage: React.FC = () => {
           <button
             type="submit"
             disabled={isPending}
-            className="btn btn-primary login-submit"
+            className="btn btn-primary lp-btn"
           >
             {isPending ? (
               <>
-                <span className="spinner" />
+                <span className="lp-spin" />
                 Memproses...
               </>
             ) : (
@@ -95,23 +95,23 @@ const LoginPage: React.FC = () => {
         </form>
 
         {/* Footer */}
-        <div className="login-footer">
+        <div className="lp-footer">
           <span>Belum punya akun?</span>
-          <Link to="/register" className="login-register-link">
+          <Link to="/register" className="lp-link">
             Daftar Sekarang
           </Link>
         </div>
 
-        {/* Demo Account Hint */}
-        <div className="login-demo">
-          <p className="demo-text">
+        {/* Demo hint */}
+        <div className="lp-demo">
+          <p className="lp-demo-text">
             Akun demo: <strong>resan</strong> / <strong>resan123</strong>
           </p>
         </div>
       </div>
 
       <style>{`
-        .login-page {
+        .lp-root {
           min-height: 100vh;
           display: flex;
           align-items: center;
@@ -121,9 +121,7 @@ const LoginPage: React.FC = () => {
           position: relative;
           overflow: hidden;
         }
-
-        /* Subtle background glow */
-        .login-page::before {
+        .lp-root::before {
           content: '';
           position: absolute;
           width: 500px;
@@ -135,72 +133,64 @@ const LoginPage: React.FC = () => {
           right: -150px;
           pointer-events: none;
         }
-
-        .login-page::after {
+        .lp-root::after {
           content: '';
           position: absolute;
           width: 400px;
           height: 400px;
           border-radius: 50%;
-          background: rgba(45, 212, 191, 0.08);
+          background: rgba(45,212,191,0.08);
           filter: blur(100px);
           bottom: -100px;
           left: -100px;
           pointer-events: none;
         }
-
-        .login-container {
+        .lp-card {
           width: 100%;
           max-width: 420px;
           background: var(--bg-secondary);
           border: 1px solid var(--border-glass);
           border-radius: var(--radius-lg);
           padding: 2.5rem 2rem;
-          box-shadow: var(--shadow-premium), 0 0 40px rgba(45, 212, 191, 0.06);
+          box-shadow: var(--shadow-premium), 0 0 40px rgba(45,212,191,0.06);
           position: relative;
           z-index: 1;
-          animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+          animation: fadeInUp 0.6s cubic-bezier(0.16,1,0.3,1) forwards;
         }
-
-        .login-brand {
+        .lp-brand {
           text-align: center;
           margin-bottom: 2rem;
         }
-
-        .login-logo {
+        .lp-icon {
           display: inline-flex;
           align-items: center;
           justify-content: center;
           width: 72px;
           height: 72px;
           border-radius: 20px;
-          background: rgba(45, 212, 191, 0.1);
-          border: 1px solid rgba(45, 212, 191, 0.25);
+          background: rgba(45,212,191,0.1);
+          border: 1px solid rgba(45,212,191,0.25);
           color: var(--accent-primary);
           margin-bottom: 1rem;
-          box-shadow: 0 0 20px rgba(45, 212, 191, 0.15);
+          box-shadow: 0 0 20px rgba(45,212,191,0.15);
         }
-
-        .login-title {
+        .lp-title {
           font-family: var(--font-title);
           font-size: 1.75rem;
           font-weight: 800;
-          color: #ffffff;
+          color: #fff;
           margin-bottom: 0.35rem;
         }
-
-        .login-subtitle {
+        .lp-sub {
           color: var(--text-secondary);
           font-size: 0.95rem;
         }
-
-        .login-form {
+        .lp-form {
           display: flex;
           flex-direction: column;
           gap: 1.25rem;
         }
-
-        .login-form .input-label {
+        .lp-form .input-label {
           display: flex;
           align-items: center;
           gap: 6px;
@@ -209,19 +199,16 @@ const LoginPage: React.FC = () => {
           font-size: 0.78rem;
           color: var(--text-secondary);
         }
-
-        .password-wrapper {
+        .pw-wrap {
           position: relative;
           display: flex;
           align-items: center;
         }
-
-        .password-input {
+        .pw-input {
           width: 100%;
           padding-right: 44px !important;
         }
-
-        .password-toggle {
+        .pw-toggle {
           position: absolute;
           right: 10px;
           background: none;
@@ -235,16 +222,14 @@ const LoginPage: React.FC = () => {
           transition: color 0.2s ease;
           opacity: 0.6;
         }
-
-        .password-toggle:hover {
+        .pw-toggle:hover {
           color: var(--accent-primary);
           opacity: 1;
         }
-
-        .login-error {
+        .lp-error {
           padding: 0.75rem 1rem;
-          background: rgba(251, 113, 133, 0.1);
-          border: 1px solid rgba(251, 113, 133, 0.25);
+          background: rgba(251,113,133,0.1);
+          border: 1px solid rgba(251,113,133,0.25);
           border-radius: var(--radius-sm);
           color: var(--color-rejected);
           font-size: 0.85rem;
@@ -253,35 +238,30 @@ const LoginPage: React.FC = () => {
           align-items: center;
           gap: 8px;
         }
-
-        .login-submit {
+        .lp-btn {
           width: 100%;
           padding: 14px 20px;
           font-size: 1rem;
           margin-top: 0.25rem;
           gap: 10px;
         }
-
-        .login-submit:disabled {
+        .lp-btn:disabled {
           opacity: 0.6;
           cursor: not-allowed;
           transform: none !important;
         }
-
-        .spinner {
+        .lp-spin {
           width: 18px;
           height: 18px;
-          border: 2px solid rgba(255, 255, 255, 0.3);
-          border-top-color: #ffffff;
+          border: 2px solid rgba(255,255,255,0.3);
+          border-top-color: #fff;
           border-radius: 50%;
-          animation: spin 0.6s linear infinite;
+          animation: lpspin 0.6s linear infinite;
         }
-
-        @keyframes spin {
+        @keyframes lpspin {
           to { transform: rotate(360deg); }
         }
-
-        .login-footer {
+        .lp-footer {
           margin-top: 1.5rem;
           text-align: center;
           display: flex;
@@ -290,50 +270,35 @@ const LoginPage: React.FC = () => {
           color: var(--text-secondary);
           font-size: 0.9rem;
         }
-
-        .login-register-link {
+        .lp-link {
           font-weight: 700;
           color: var(--accent-primary);
           transition: all 0.2s ease;
         }
-
-        .login-register-link:hover {
+        .lp-link:hover {
           color: var(--accent-secondary);
           text-decoration: underline;
         }
-
-        .login-demo {
+        .lp-demo {
           margin-top: 1rem;
           padding: 0.75rem 1rem;
-          background: rgba(45, 212, 191, 0.06);
-          border: 1px solid rgba(45, 212, 191, 0.12);
+          background: rgba(45,212,191,0.06);
+          border: 1px solid rgba(45,212,191,0.12);
           border-radius: var(--radius-sm);
           text-align: center;
         }
-
-        .demo-text {
+        .lp-demo-text {
           font-size: 0.78rem;
           color: var(--text-muted);
         }
-
-        .demo-text strong {
+        .lp-demo-text strong {
           color: var(--accent-primary);
           font-weight: 700;
         }
-
         @media (max-width: 480px) {
-          .login-container {
-            padding: 2rem 1.25rem;
-          }
-
-          .login-title {
-            font-size: 1.5rem;
-          }
-
-          .login-logo {
-            width: 60px;
-            height: 60px;
-          }
+          .lp-card { padding: 2rem 1.25rem; }
+          .lp-title { font-size: 1.5rem; }
+          .lp-icon { width: 60px; height: 60px; }
         }
       `}</style>
     </div>
