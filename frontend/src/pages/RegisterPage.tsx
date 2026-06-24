@@ -31,7 +31,7 @@ const RegisterPage: React.FC = () => {
       <input
         type={type}
         className="input-control"
-        placeholder={`Masukkan ${label.toLowerCase()}`}
+        placeholder={'Masukkan ' + label.toLowerCase()}
         value={form[key]}
         onChange={e => setForm(f => ({ ...f, [key]: e.target.value }))}
         required
@@ -40,19 +40,19 @@ const RegisterPage: React.FC = () => {
   );
 
   return (
-    <div className="register-page">
-      <div className="register-container">
-        {/* Brand Header */}
-        <div className="register-brand">
-          <div className="register-logo">
+    <div className="rp-root">
+      <div className="rp-card">
+        {/* Brand */}
+        <div className="rp-brand">
+          <div className="rp-icon">
             <PiggyBank size={36} strokeWidth={1.5} />
           </div>
-          <h1 className="register-title">Buat Akun Baru</h1>
-          <p className="register-subtitle">Mulai perjalanan finansialmu</p>
+          <h1 className="rp-title">Buat Akun Baru</h1>
+          <p className="rp-sub">Mulai perjalanan finansialmu</p>
         </div>
 
-        {/* Register Form */}
-        <form onSubmit={handleSubmit} className="register-form">
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="rp-form">
           {field('Username', 'username', 'text', <User size={14} />)}
           
           <div className="input-group">
@@ -60,10 +60,10 @@ const RegisterPage: React.FC = () => {
               <Lock size={14} />
               Password
             </label>
-            <div className="password-wrapper">
+            <div className="pw-wrap">
               <input
                 type={showPassword ? 'text' : 'password'}
-                className="input-control password-input"
+                className="input-control pw-input"
                 placeholder="Masukkan password"
                 value={form.password}
                 onChange={e => setForm(f => ({ ...f, password: e.target.value }))}
@@ -71,8 +71,8 @@ const RegisterPage: React.FC = () => {
               />
               <button
                 type="button"
-                className="password-toggle"
-                onClick={() => setShowPassword(!showPassword)}
+                className="pw-toggle"
+                onClick={() => setShowPassword(prev => !prev)}
                 tabIndex={-1}
               >
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
@@ -84,15 +84,15 @@ const RegisterPage: React.FC = () => {
           {field('Penghasilan Bulanan (Rp)', 'monthlyIncome', 'number', <TrendingUp size={14} />)}
 
           {error && (
-            <div className="register-error">
+            <div className="rp-error">
               <span>Registrasi gagal. Username mungkin sudah dipakai.</span>
             </div>
           )}
 
-          <button type="submit" disabled={isPending} className="btn btn-primary register-submit">
+          <button type="submit" disabled={isPending} className="btn btn-primary rp-btn">
             {isPending ? (
               <>
-                <span className="spinner" />
+                <span className="rp-spin" />
                 Memproses...
               </>
             ) : (
@@ -105,16 +105,16 @@ const RegisterPage: React.FC = () => {
         </form>
 
         {/* Footer */}
-        <div className="register-footer">
+        <div className="rp-footer">
           <span>Sudah punya akun?</span>
-          <Link to="/login" className="register-login-link">
+          <Link to="/login" className="rp-link">
             Masuk
           </Link>
         </div>
       </div>
 
       <style>{`
-        .register-page {
+        .rp-root {
           min-height: 100vh;
           display: flex;
           align-items: center;
@@ -124,8 +124,7 @@ const RegisterPage: React.FC = () => {
           position: relative;
           overflow: hidden;
         }
-
-        .register-page::before {
+        .rp-root::before {
           content: '';
           position: absolute;
           width: 500px;
@@ -137,72 +136,64 @@ const RegisterPage: React.FC = () => {
           left: -150px;
           pointer-events: none;
         }
-
-        .register-page::after {
+        .rp-root::after {
           content: '';
           position: absolute;
           width: 400px;
           height: 400px;
           border-radius: 50%;
-          background: rgba(45, 212, 191, 0.06);
+          background: rgba(45,212,191,0.06);
           filter: blur(100px);
           bottom: -100px;
           right: -100px;
           pointer-events: none;
         }
-
-        .register-container {
+        .rp-card {
           width: 100%;
           max-width: 420px;
           background: var(--bg-secondary);
           border: 1px solid var(--border-glass);
           border-radius: var(--radius-lg);
           padding: 2.5rem 2rem;
-          box-shadow: var(--shadow-premium), 0 0 40px rgba(45, 212, 191, 0.06);
+          box-shadow: var(--shadow-premium), 0 0 40px rgba(45,212,191,0.06);
           position: relative;
           z-index: 1;
-          animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+          animation: fadeInUp 0.6s cubic-bezier(0.16,1,0.3,1) forwards;
         }
-
-        .register-brand {
+        .rp-brand {
           text-align: center;
           margin-bottom: 2rem;
         }
-
-        .register-logo {
+        .rp-icon {
           display: inline-flex;
           align-items: center;
           justify-content: center;
           width: 64px;
           height: 64px;
           border-radius: 20px;
-          background: rgba(45, 212, 191, 0.1);
-          border: 1px solid rgba(45, 212, 191, 0.25);
+          background: rgba(45,212,191,0.1);
+          border: 1px solid rgba(45,212,191,0.25);
           color: var(--accent-primary);
           margin-bottom: 1rem;
-          box-shadow: 0 0 20px rgba(45, 212, 191, 0.15);
+          box-shadow: 0 0 20px rgba(45,212,191,0.15);
         }
-
-        .register-title {
+        .rp-title {
           font-family: var(--font-title);
           font-size: 1.6rem;
           font-weight: 800;
-          color: #ffffff;
+          color: #fff;
           margin-bottom: 0.35rem;
         }
-
-        .register-subtitle {
+        .rp-sub {
           color: var(--text-secondary);
           font-size: 0.9rem;
         }
-
-        .register-form {
+        .rp-form {
           display: flex;
           flex-direction: column;
           gap: 1.15rem;
         }
-
-        .register-form .input-label {
+        .rp-form .input-label {
           display: flex;
           align-items: center;
           gap: 6px;
@@ -211,19 +202,16 @@ const RegisterPage: React.FC = () => {
           font-size: 0.78rem;
           color: var(--text-secondary);
         }
-
-        .password-wrapper {
+        .pw-wrap {
           position: relative;
           display: flex;
           align-items: center;
         }
-
-        .password-input {
+        .pw-input {
           width: 100%;
           padding-right: 44px !important;
         }
-
-        .password-toggle {
+        .pw-toggle {
           position: absolute;
           right: 10px;
           background: none;
@@ -237,50 +225,43 @@ const RegisterPage: React.FC = () => {
           transition: color 0.2s ease;
           opacity: 0.6;
         }
-
-        .password-toggle:hover {
+        .pw-toggle:hover {
           color: var(--accent-primary);
           opacity: 1;
         }
-
-        .register-error {
+        .rp-error {
           padding: 0.75rem 1rem;
-          background: rgba(251, 113, 133, 0.1);
-          border: 1px solid rgba(251, 113, 133, 0.25);
+          background: rgba(251,113,133,0.1);
+          border: 1px solid rgba(251,113,133,0.25);
           border-radius: var(--radius-sm);
           color: var(--color-rejected);
           font-size: 0.85rem;
           font-weight: 500;
         }
-
-        .register-submit {
+        .rp-btn {
           width: 100%;
           padding: 14px 20px;
           font-size: 1rem;
           margin-top: 0.25rem;
           gap: 10px;
         }
-
-        .register-submit:disabled {
+        .rp-btn:disabled {
           opacity: 0.6;
           cursor: not-allowed;
           transform: none !important;
         }
-
-        .spinner {
+        .rp-spin {
           width: 18px;
           height: 18px;
-          border: 2px solid rgba(255, 255, 255, 0.3);
-          border-top-color: #ffffff;
+          border: 2px solid rgba(255,255,255,0.3);
+          border-top-color: #fff;
           border-radius: 50%;
-          animation: spin 0.6s linear infinite;
+          animation: rpspin 0.6s linear infinite;
         }
-
-        @keyframes spin {
+        @keyframes rpspin {
           to { transform: rotate(360deg); }
         }
-
-        .register-footer {
+        .rp-footer {
           margin-top: 1.5rem;
           text-align: center;
           display: flex;
@@ -289,31 +270,19 @@ const RegisterPage: React.FC = () => {
           color: var(--text-secondary);
           font-size: 0.9rem;
         }
-
-        .register-login-link {
+        .rp-link {
           font-weight: 700;
           color: var(--accent-primary);
           transition: all 0.2s ease;
         }
-
-        .register-login-link:hover {
+        .rp-link:hover {
           color: var(--accent-secondary);
           text-decoration: underline;
         }
-
         @media (max-width: 480px) {
-          .register-container {
-            padding: 2rem 1.25rem;
-          }
-
-          .register-title {
-            font-size: 1.35rem;
-          }
-
-          .register-logo {
-            width: 56px;
-            height: 56px;
-          }
+          .rp-card { padding: 2rem 1.25rem; }
+          .rp-title { font-size: 1.35rem; }
+          .rp-icon { width: 56px; height: 56px; }
         }
       `}</style>
     </div>
