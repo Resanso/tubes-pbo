@@ -14,7 +14,7 @@ const Navbar: React.FC = () => {
 
   return (
     <nav className="nav-glass">
-      <div className="nav-brand">
+      <div className="nav-brand" style={{ cursor: 'pointer' }} onClick={() => navigate('/dashboard')}>
         <svg
           className="icon"
           viewBox="0 0 24 24"
@@ -32,7 +32,7 @@ const Navbar: React.FC = () => {
       </div>
 
       <div className="nav-links">
-        <NavLink to="/" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
+        <NavLink to="/dashboard" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
           Dashboard
         </NavLink>
         <NavLink to="/wishlist" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
