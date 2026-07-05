@@ -1,5 +1,5 @@
 import { useAuth } from "../hooks/useAuth";
-import { useDecision } from "../hooks/useDecision";
+import { useDecisionHistory } from "../hooks/useDecision";
 import { formatDate, formatRupiah } from "../utils/format.utils";
 import { Clock, Calendar, TrendingUp, ShoppingBag, PiggyBank, AlertCircle, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -8,7 +8,7 @@ import { useEffect } from "react";
 export default function HistoryPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const { data: decisions, isLoading, error } = useDecision(user?.id ?? null);
+  const { data: decisions, isLoading, error } = useDecisionHistory(user?.id ?? null);
 
   useEffect(() => {
     if (!user) {
@@ -67,21 +67,21 @@ export default function HistoryPage() {
           </div>
         ) : (
           <div className="space-y-4">
-            {decisions.map((decision) => {
-              const item = decision.item;
-              const isBuy = decision.recommendation?.includes("BELI") || decision.recommendation?.includes("beli");
-              
+            {decisions.map((entry) => {
+              const decision = entry.purchaseDecision;
+              const isBuy = decision?.decisionStatus === "BELI";
+
               return (
                 <div
-                  key={decision.id}
+                  key={entry.id}
                   className="bg-white/5 border border-white/10 rounded-2xl p-5 hover:bg-white/[0.07] transition-colors"
                 >
                   <div className="flex items-start justify-between gap-4">
                     {/* Left: Info */}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <h3 className="text-white font-semibold text-lg truncate">
-                          {item?.name || "Item tidak diketahui"}
+                        <h3 className="text-white font-semibold text-lg">
+                          Keputusan #{entry.id}
                         </h3>
                         <span
                           className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium ${
@@ -99,25 +99,36 @@ export default function HistoryPage() {
                       </div>
 
                       <div className="flex items-center gap-4 mt-2 text-sm text-slate-400 flex-wrap">
-                        {item?.price && (
+                        {decision?.remainingBalance !== undefined && (
                           <span className="flex items-center gap-1">
                             <TrendingUp className="h-3.5 w-3.5" />
-                            {formatRupiah(item.price)}
+                            Sisa: {formatRupiah(decision.remainingBalance)}
                           </span>
                         )}
                         <span className="flex items-center gap-1">
                           <Calendar className="h-3.5 w-3.5" />
-                          {formatDate(decision.decisionDate || decision.createdAt)}
+                          {formatDate(entry.decisionDate)}
                         </span>
                       </div>
 
                       <p className="mt-3 text-sm text-slate-300 leading-relaxed">
-                        {decision.recommendation}
+                        {entry.result || decision?.advice}
                       </p>
+
+                      {decision?.savingsPlan && (
+                        <div className="mt-3 p-3 bg-amber-500/5 border border-amber-500/10 rounded-xl">
+                          <p className="text-xs text-amber-400 font-medium mb-1">
+                            💡 Rencana Tabungan
+                          </p>
+                          <p className="text-sm text-slate-300">
+                            {decision.savingsPlan.result}
+                          </p>
+                        </div>
+                      )}
                     </div>
 
                     {/* Right: Score indicator */}
-                    {decision.regretScore !== undefined && (
+                    {decision?.regretScore !== undefined && (
                       <div className="flex-shrink-0 text-right">
                         <div className="text-xs text-slate-500 mb-1">Regret Score</div>
                         <div
