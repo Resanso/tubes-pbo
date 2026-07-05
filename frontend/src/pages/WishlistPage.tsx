@@ -1,14 +1,16 @@
 import { useAuth } from "../hooks/useAuth";
-import { useWishlist } from "../hooks/useWishlist";
+import { useWishlist, useRemoveWishlist } from "../hooks/useWishlist";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { Heart, Trash2, Plus, ShoppingBag, Loader2, AlertCircle, Package } from "lucide-react";
 import { formatRupiah } from "../utils/format.utils";
+import type { WishlistItem } from "../types/item.types";
 
 export default function WishlistPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const { data: wishlist, isLoading, error, deleteItem } = useWishlist(user?.id ?? null);
+  const { data: wishlist, isLoading, error } = useWishlist(user?.id ?? null);
+  const removeMutation = useRemoveWishlist();
 
   useEffect(() => {
     if (!user) {
@@ -42,9 +44,8 @@ export default function WishlistPage() {
   }
 
   const handleDelete = async (id: number) => {
-    if (window.confirm("Hapus item ini dari wishlist?")) {
-      await deleteItem(id);
-    }
+    if (!window.confirm("Hapus item ini dari wishlist?")) return;
+    removeMutation.mutate({ id, customerId: user.id });
   };
 
   return (
@@ -89,13 +90,13 @@ export default function WishlistPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {wishlist.map((item) => {
-              const itemData = item.item || item;
-              const category = itemData.category;
+            {wishlist.map((entry: WishlistItem) => {
+              const itemData = entry.item;
+              const category = itemData?.category;
 
               return (
                 <div
-                  key={item.id}
+                  key={entry.id}
                   className="bg-white/5 border border-white/10 rounded-2xl p-5 hover:bg-white/[0.07] transition-all group"
                 >
                   {/* Item info */}
@@ -104,7 +105,7 @@ export default function WishlistPage() {
                       <Package className="h-5 w-5 text-teal-400" />
                     </div>
                     <button
-                      onClick={() => handleDelete(item.id)}
+                      onClick={() => handleDelete(entry.id)}
                       className="p-1.5 rounded-lg text-slate-500 hover:text-red-400 hover:bg-red-500/10 transition-colors opacity-0 group-hover:opacity-100"
                     >
                       <Trash2 className="h-4 w-4" />
@@ -112,25 +113,25 @@ export default function WishlistPage() {
                   </div>
 
                   <h3 className="text-white font-semibold text-base truncate">
-                    {itemData.name}
+                    {itemData?.name || "Item tidak diketahui"}
                   </h3>
 
                   <p className="text-teal-400 font-medium text-lg mt-1">
-                    {formatRupiah(itemData.price)}
+                    {itemData?.price ? formatRupiah(itemData.price) : "-"}
                   </p>
 
                   <div className="flex items-center gap-2 mt-3 flex-wrap">
-                    {itemData.priorityLabel && (
+                    {itemData?.priorityLabel && (
                       <span className="px-2.5 py-0.5 bg-indigo-500/10 text-indigo-400 rounded-full text-xs font-medium">
                         {itemData.priorityLabel}
                       </span>
                     )}
-                    {itemData.itemType && (
+                    {itemData?.itemType && (
                       <span className="px-2.5 py-0.5 bg-slate-700/50 text-slate-300 rounded-full text-xs font-medium">
                         {itemData.itemType}
                       </span>
                     )}
-                    {itemData.urgency && (
+                    {itemData?.urgency && (
                       <span className="px-2.5 py-0.5 bg-amber-500/10 text-amber-400 rounded-full text-xs font-medium">
                         Urgensi: {itemData.urgency}/5
                       </span>
@@ -143,9 +144,26 @@ export default function WishlistPage() {
                     </p>
                   )}
 
+                  {/* Status badge */}
+                  <div className="mt-2">
+                    <span
+                      className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
+                        entry.status === "PENDING"
+                          ? "bg-amber-500/10 text-amber-400"
+                          : entry.status === "APPROVED"
+                          ? "bg-emerald-500/10 text-emerald-400"
+                          : entry.status === "REJECTED"
+                          ? "bg-red-500/10 text-red-400"
+                          : "bg-blue-500/10 text-blue-400"
+                      }`}
+                    >
+                      {entry.status}
+                    </span>
+                  </div>
+
                   {/* Action */}
                   <button
-                    onClick={() => navigate(`/decision?itemId=${itemData.id}&wishlistId=${item.id}`)}
+                    onClick={() => navigate(`/decision?itemId=${itemData?.id}&wishlistId=${entry.id}`)}
                     className="w-full mt-4 flex items-center justify-center gap-2 px-4 py-2 bg-teal-500/10 hover:bg-teal-500/20 text-teal-400 rounded-xl transition-colors text-sm font-medium"
                   >
                     <ShoppingBag className="h-4 w-4" />
