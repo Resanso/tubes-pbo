@@ -1,105 +1,156 @@
-import React from 'react';
-import { useAuth } from '@/contexts/AuthContext';
-import { useDecisionHistory } from '@/hooks/useDecision';
-import { formatRupiah } from '@/utils/format.utils';
-import { Loader2, AlertTriangle, Inbox, CalendarDays, Lightbulb, Check, X } from 'lucide-react';
+import { useAuth } from "../hooks/useAuth";
+import { useDecisionHistory } from "../hooks/useDecision";
+import { formatDate, formatRupiah } from "../utils/format.utils";
+import { Clock, Calendar, TrendingUp, ShoppingBag, PiggyBank, AlertCircle, Loader2 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
-const HistoryPage: React.FC = () => {
-  const { customer } = useAuth();
-  const { data: history, isLoading, isError } = useDecisionHistory(customer?.id ?? 0);
+export default function HistoryPage() {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const { data: decisions, isLoading, error } = useDecisionHistory(user?.id ?? null);
+
+  useEffect(() => {
+    if (!user) {
+      navigate("/login");
+    }
+  }, [user, navigate]);
+
+  if (!user) return null;
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-teal-950 to-slate-950 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-3">
+          <Loader2 className="h-8 w-8 animate-spin text-teal-400" />
+          <p className="text-slate-400">Memuat riwayat...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-teal-950 to-slate-950 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-3 text-red-400">
+          <AlertCircle className="h-12 w-12" />
+          <p className="text-lg font-semibold">Gagal memuat riwayat</p>
+          <p className="text-slate-400 text-sm">Silakan coba lagi nanti</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="page-container">
-      <div className="page-header">
-        <h2 className="page-title">Riwayat Keputusan</h2>
-        <p className="page-subtitle">Rekap semua keputusan beli vs nabung yang pernah kamu buat</p>
-      </div>
-
-      {isLoading && (
-        <div className="history-empty">
-          <span className="history-empty-icon"><Loader2 size={40} className="animate-spin" /></span>
-          <p className="text-muted">Memuat riwayat...</p>
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-teal-950 to-slate-950">
+      <div className="max-w-5xl mx-auto px-4 py-8">
+        {/* Header */}
+        <div className="flex items-center gap-3 mb-8">
+          <div className="p-2.5 bg-teal-500/10 rounded-xl">
+            <Clock className="h-6 w-6 text-teal-400" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold text-white">Riwayat Keputusan</h1>
+            <p className="text-slate-400 text-sm mt-0.5">
+              Semua keputusan yang pernah kamu buat
+            </p>
+          </div>
         </div>
-      )}
 
-      {isError && (
-        <div className="history-empty">
-          <span className="history-empty-icon"><AlertTriangle size={40} /></span>
-          <p className="text-error">Gagal memuat riwayat. Coba lagi nanti.</p>
-        </div>
-      )}
+        {!decisions || decisions.length === 0 ? (
+          <div className="bg-white/5 border border-white/10 rounded-2xl p-12 text-center">
+            <Clock className="h-12 w-12 text-slate-500 mx-auto mb-4" />
+            <h3 className="text-lg font-semibold text-white mb-2">Belum Ada Riwayat</h3>
+            <p className="text-slate-400 text-sm">
+              Kamu belum membuat keputusan apapun. Yuk evaluasi barang di wishlist-mu!
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {decisions.map((entry) => {
+              const decision = entry.purchaseDecision;
+              const isBuy = decision?.decisionStatus === "BELI";
 
-      {!isLoading && !isError && history?.length === 0 && (
-        <div className="history-empty">
-          <span className="history-empty-icon"><Inbox size={40} /></span>
-          <p className="text-muted">Belum ada riwayat keputusan.</p>
-          <p className="text-muted" style={{ fontSize: '0.85rem', marginTop: '0.25rem' }}>
-            Coba evaluasi item di halaman Beli vs Nabung.
-          </p>
-        </div>
-      )}
+              return (
+                <div
+                  key={entry.id}
+                  className="bg-white/5 border border-white/10 rounded-2xl p-5 hover:bg-white/[0.07] transition-colors"
+                >
+                  <div className="flex items-start justify-between gap-4">
+                    {/* Left: Info */}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <h3 className="text-white font-semibold text-lg">
+                          Keputusan #{entry.id}
+                        </h3>
+                        <span
+                          className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                            isBuy
+                              ? "bg-emerald-500/10 text-emerald-400"
+                              : "bg-amber-500/10 text-amber-400"
+                          }`}
+                        >
+                          {isBuy ? (
+                            <><ShoppingBag className="h-3 w-3" /> BELI</>
+                          ) : (
+                            <><PiggyBank className="h-3 w-3" /> NABUNG</>
+                          )}
+                        </span>
+                      </div>
 
-      <div className="history-list">
-        {history?.map((h, index) => {
-          const isBeli = (h.purchaseDecision?.decisionStatus ?? h.result) === 'BELI';
-          const status = h.purchaseDecision?.decisionStatus ?? h.result;
-          const balancePositive = (h.purchaseDecision?.remainingBalance ?? 0) >= 0;
+                      <div className="flex items-center gap-4 mt-2 text-sm text-slate-400 flex-wrap">
+                        {decision?.remainingBalance !== undefined && (
+                          <span className="flex items-center gap-1">
+                            <TrendingUp className="h-3.5 w-3.5" />
+                            Sisa: {formatRupiah(decision.remainingBalance)}
+                          </span>
+                        )}
+                        <span className="flex items-center gap-1">
+                          <Calendar className="h-3.5 w-3.5" />
+                          {formatDate(entry.decisionDate)}
+                        </span>
+                      </div>
 
-          return (
-            <div key={h.id} className={`history-card ${isBeli ? 'history-beli' : 'history-nabung'}`}>
+                      <p className="mt-3 text-sm text-slate-300 leading-relaxed">
+                        {entry.result || decision?.advice}
+                      </p>
 
-              {/* Header: nomor urut, tanggal, badge status */}
-              <div className="history-card-header">
-                <div className="history-meta">
-                  <span className="history-index">#{index + 1}</span>
-                  <span className="history-date">
-                    <CalendarDays size={13} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '4px' }} />
-                    {h.decisionDate}
-                  </span>
-                </div>
-                <span className={`history-badge ${isBeli ? 'badge-beli' : 'badge-nabung'}`}>
-                  {isBeli
-                    ? <Check size={12} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '3px' }} />
-                    : <X size={12} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '3px' }} />
-                  }
-                  {status}
-                </span>
-              </div>
+                      {decision?.savingsPlan && (
+                        <div className="mt-3 p-3 bg-amber-500/5 border border-amber-500/10 rounded-xl">
+                          <p className="text-xs text-amber-400 font-medium mb-1">
+                            💡 Rencana Tabungan
+                          </p>
+                          <p className="text-sm text-slate-300">
+                            {decision.savingsPlan.result}
+                          </p>
+                        </div>
+                      )}
+                    </div>
 
-              {/* Stats: regret score + sisa saldo */}
-              {h.purchaseDecision && (
-                <div className="history-stats">
-                  <div className="history-stat">
-                    <span className="history-stat-label">Regret Score</span>
-                    <span className={`history-stat-value ${isBeli ? 'value-success' : 'value-danger'}`}>
-                      {h.purchaseDecision.regretScore?.toFixed(1)}
-                      <span className="history-stat-unit"> / 100</span>
-                    </span>
+                    {/* Right: Score indicator */}
+                    {decision?.regretScore !== undefined && (
+                      <div className="flex-shrink-0 text-right">
+                        <div className="text-xs text-slate-500 mb-1">Regret Score</div>
+                        <div
+                          className={`text-lg font-bold ${
+                            decision.regretScore < 30
+                              ? "text-emerald-400"
+                              : decision.regretScore < 60
+                              ? "text-amber-400"
+                              : "text-red-400"
+                          }`}
+                        >
+                          {decision.regretScore.toFixed(0)}
+                        </div>
+                      </div>
+                    )}
                   </div>
-                  <div className="history-stat-divider" />
-                  <div className="history-stat">
-                    <span className="history-stat-label">Sisa Saldo</span>
-                    <span className={`history-stat-value ${balancePositive ? 'value-success' : 'value-danger'}`}>
-                      {formatRupiah(h.purchaseDecision.remainingBalance)}
-                    </span>
-                  </div>
                 </div>
-              )}
-
-              {/* Saran */}
-              {h.purchaseDecision?.advice && (
-                <div className="history-advice">
-                  <span className="history-advice-icon"><Lightbulb size={16} /></span>
-                  <p className="history-advice-text">{h.purchaseDecision.advice}</p>
-                </div>
-              )}
-
-            </div>
-          );
-        })}
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );
-};
-
-export default HistoryPage;
+}

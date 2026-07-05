@@ -1,160 +1,180 @@
-import React from 'react';
-import { useAuth } from '@/contexts/AuthContext';
-import { wishlistApi, itemApi } from '@/api/item.api';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { formatRupiah } from '@/utils/format.utils';
-import { Loader2, ShoppingCart } from 'lucide-react';
+import { useAuth } from "../hooks/useAuth";
+import { useWishlist, useRemoveWishlist } from "../hooks/useWishlist";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { Heart, Trash2, Plus, ShoppingBag, Loader2, AlertCircle, Package } from "lucide-react";
+import { formatRupiah } from "../utils/format.utils";
+import type { WishlistItem } from "../types/item.types";
 
-const statusStyle: Record<string, { bg: string; text: string; border: string }> = {
-  PENDING:   { bg: 'rgba(245,158,11,0.12)',  text: '#f59e0b', border: 'rgba(245,158,11,0.3)' },
-  APPROVED:  { bg: 'rgba(16,185,129,0.12)',  text: '#10b981', border: 'rgba(16,185,129,0.3)' },
-  REJECTED:  { bg: 'rgba(239,68,68,0.12)',   text: '#ef4444', border: 'rgba(239,68,68,0.3)' },
-  PURCHASED: { bg: 'rgba(45,212,191,0.12)',  text: '#2dd4bf', border: 'rgba(45,212,191,0.3)' },
-};
+export default function WishlistPage() {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const { data: wishlist, isLoading, error } = useWishlist(user?.id ?? null);
+  const removeMutation = useRemoveWishlist();
 
-const WishlistPage: React.FC = () => {
-  const { customer } = useAuth();
-  const queryClient = useQueryClient();
-  const [selectedItemId, setSelectedItemId] = React.useState('');
+  useEffect(() => {
+    if (!user) {
+      navigate("/login");
+    }
+  }, [user, navigate]);
 
-  const { data: wishlist, isLoading } = useQuery({
-    queryKey: ['wishlist', customer?.id],
-    queryFn: () => wishlistApi.getByCustomer(customer!.id),
-    enabled: !!customer,
-  });
+  if (!user) return null;
 
-  const { data: items } = useQuery({
-    queryKey: ['items'],
-    queryFn: itemApi.getAll,
-  });
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-teal-950 to-slate-950 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-3">
+          <Loader2 className="h-8 w-8 animate-spin text-teal-400" />
+          <p className="text-slate-400">Memuat wishlist...</p>
+        </div>
+      </div>
+    );
+  }
 
-  const addMutation = useMutation({
-    mutationFn: () => wishlistApi.add(customer!.id, Number(selectedItemId)),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['wishlist'] });
-      setSelectedItemId('');
-    },
-  });
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-teal-950 to-slate-950 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-3 text-red-400">
+          <AlertCircle className="h-12 w-12" />
+          <p className="text-lg font-semibold">Gagal memuat wishlist</p>
+          <p className="text-slate-400 text-sm">Silakan coba lagi nanti</p>
+        </div>
+      </div>
+    );
+  }
 
-  const removeMutation = useMutation({
-    mutationFn: (id: number) => wishlistApi.remove(id),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['wishlist'] }),
-  });
+  const handleDelete = async (id: number) => {
+    if (!window.confirm("Hapus item ini dari wishlist?")) return;
+    removeMutation.mutate({ id, customerId: user.id });
+  };
 
   return (
-    <div className="page-container">
-      <div className="page-header">
-        <h2 className="page-title">Wishlist</h2>
-        <p className="page-subtitle">Daftar barang yang ingin kamu beli</p>
-      </div>
-
-      {/* Add row */}
-      <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-        <select
-          className="form-input form-select"
-          style={{ flex: 1 }}
-          value={selectedItemId}
-          onChange={(e) => setSelectedItemId(e.target.value)}
-        >
-          <option value="">-- Pilih item untuk ditambahkan --</option>
-          {items?.map((item) => (
-            <option key={item.id} value={String(item.id)}>
-              {item.name} — {formatRupiah(item.price)}
-            </option>
-          ))}
-        </select>
-        <button
-          className="btn btn-primary"
-          style={{ marginTop: 0, whiteSpace: 'nowrap' }}
-          disabled={!selectedItemId || addMutation.isPending}
-          onClick={() => addMutation.mutate()}
-        >
-          {addMutation.isPending ? 'Menambahkan...' : 'Tambah'}
-        </button>
-      </div>
-
-      {addMutation.isError && (
-        <p className="text-error">Gagal menambahkan item. Coba lagi.</p>
-      )}
-
-      {isLoading && (
-        <div className="history-empty">
-          <span className="history-empty-icon"><Loader2 size={40} className="animate-spin" /></span>
-          <p className="text-muted">Memuat wishlist...</p>
-        </div>
-      )}
-
-      {!isLoading && (!wishlist || wishlist.length === 0) && (
-        <div className="history-empty">
-          <span className="history-empty-icon"><ShoppingCart size={40} /></span>
-          <p className="text-muted">Wishlist masih kosong.</p>
-          <p className="text-muted" style={{ fontSize: '0.85rem', marginTop: '0.25rem' }}>
-            Pilih item di atas lalu klik Tambah.
-          </p>
-        </div>
-      )}
-
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-        {wishlist?.map((w) => {
-          const st = statusStyle[w.status] ?? statusStyle.PENDING;
-          return (
-            <div
-              key={w.id}
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                padding: '1rem 1.25rem',
-                background: 'var(--bg-secondary)',
-                border: '1px solid var(--border-glass)',
-                borderRadius: '12px',
-                gap: '1rem',
-              }}
-            >
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <p style={{ margin: 0, fontWeight: 600, fontSize: '1rem', color: 'var(--text-primary)', marginBottom: '0.2rem' }}>
-                  {w.item.name}
-                </p>
-                <p style={{ margin: 0, fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
-                  {formatRupiah(w.item.price)} — {w.item.priorityLabel}
-                </p>
-                <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.15rem' }}>
-                  Ditambahkan: {w.date}
-                </p>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexShrink: 0 }}>
-                <span style={{
-                  padding: '3px 10px', borderRadius: '99px',
-                  fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.04em',
-                  background: st.bg, color: st.text, border: `1px solid ${st.border}`,
-                }}>
-                  {w.status}
-                </span>
-                <button
-                  style={{
-                    padding: '4px 14px',
-                    borderRadius: '8px',
-                    fontSize: '0.82rem',
-                    fontWeight: 600,
-                    cursor: 'pointer',
-                    background: 'rgba(239,68,68,0.12)',
-                    color: '#ef4444',
-                    border: '1px solid rgba(239,68,68,0.3)',
-                    fontFamily: 'var(--font-body)',
-                    transition: 'all 0.2s ease',
-                  }}
-                  onClick={() => removeMutation.mutate(w.id)}
-                  disabled={removeMutation.isPending}
-                >
-                  Hapus
-                </button>
-              </div>
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-teal-950 to-slate-950">
+      <div className="max-w-5xl mx-auto px-4 py-8">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 bg-teal-500/10 rounded-xl">
+              <Heart className="h-6 w-6 text-teal-400" />
             </div>
-          );
-        })}
+            <div>
+              <h1 className="text-2xl font-bold text-white">Wishlist</h1>
+              <p className="text-slate-400 text-sm mt-0.5">
+                {wishlist?.length || 0} barang yang ingin kamu beli
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={() => navigate("/add-item")}
+            className="flex items-center gap-2 px-4 py-2.5 bg-teal-500 hover:bg-teal-400 text-white rounded-xl transition-colors font-medium text-sm"
+          >
+            <Plus className="h-4 w-4" />
+            Tambah Barang
+          </button>
+        </div>
+
+        {!wishlist || wishlist.length === 0 ? (
+          <div className="bg-white/5 border border-white/10 rounded-2xl p-12 text-center">
+            <Heart className="h-12 w-12 text-slate-500 mx-auto mb-4" />
+            <h3 className="text-lg font-semibold text-white mb-2">Wishlist Masih Kosong</h3>
+            <p className="text-slate-400 text-sm mb-6">
+              Tambahkan barang impianmu untuk dievaluasi!
+            </p>
+            <button
+              onClick={() => navigate("/add-item")}
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-teal-500 hover:bg-teal-400 text-white rounded-xl transition-colors font-medium text-sm"
+            >
+              <Plus className="h-4 w-4" />
+              Tambah Barang Sekarang
+            </button>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {wishlist.map((entry: WishlistItem) => {
+              const itemData = entry.item;
+              const category = itemData?.category;
+
+              return (
+                <div
+                  key={entry.id}
+                  className="bg-white/5 border border-white/10 rounded-2xl p-5 hover:bg-white/[0.07] transition-all group"
+                >
+                  {/* Item info */}
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="p-2.5 bg-teal-500/10 rounded-lg">
+                      <Package className="h-5 w-5 text-teal-400" />
+                    </div>
+                    <button
+                      onClick={() => handleDelete(entry.id)}
+                      className="p-1.5 rounded-lg text-slate-500 hover:text-red-400 hover:bg-red-500/10 transition-colors opacity-0 group-hover:opacity-100"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  </div>
+
+                  <h3 className="text-white font-semibold text-base truncate">
+                    {itemData?.name || "Item tidak diketahui"}
+                  </h3>
+
+                  <p className="text-teal-400 font-medium text-lg mt-1">
+                    {itemData?.price ? formatRupiah(itemData.price) : "-"}
+                  </p>
+
+                  <div className="flex items-center gap-2 mt-3 flex-wrap">
+                    {itemData?.priorityLabel && (
+                      <span className="px-2.5 py-0.5 bg-indigo-500/10 text-indigo-400 rounded-full text-xs font-medium">
+                        {itemData.priorityLabel}
+                      </span>
+                    )}
+                    {itemData?.itemType && (
+                      <span className="px-2.5 py-0.5 bg-slate-700/50 text-slate-300 rounded-full text-xs font-medium">
+                        {itemData.itemType}
+                      </span>
+                    )}
+                    {itemData?.urgency && (
+                      <span className="px-2.5 py-0.5 bg-amber-500/10 text-amber-400 rounded-full text-xs font-medium">
+                        Urgensi: {itemData.urgency}/5
+                      </span>
+                    )}
+                  </div>
+
+                  {category && (
+                    <p className="text-xs text-slate-500 mt-2">
+                      {category.name}
+                    </p>
+                  )}
+
+                  {/* Status badge */}
+                  <div className="mt-2">
+                    <span
+                      className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
+                        entry.status === "PENDING"
+                          ? "bg-amber-500/10 text-amber-400"
+                          : entry.status === "APPROVED"
+                          ? "bg-emerald-500/10 text-emerald-400"
+                          : entry.status === "REJECTED"
+                          ? "bg-red-500/10 text-red-400"
+                          : "bg-blue-500/10 text-blue-400"
+                      }`}
+                    >
+                      {entry.status}
+                    </span>
+                  </div>
+
+                  {/* Action */}
+                  <button
+                    onClick={() => navigate(`/decision?itemId=${itemData?.id}&wishlistId=${entry.id}`)}
+                    className="w-full mt-4 flex items-center justify-center gap-2 px-4 py-2 bg-teal-500/10 hover:bg-teal-500/20 text-teal-400 rounded-xl transition-colors text-sm font-medium"
+                  >
+                    <ShoppingBag className="h-4 w-4" />
+                    Evaluasi Keputusan
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );
-};
-
-export default WishlistPage;
+}
