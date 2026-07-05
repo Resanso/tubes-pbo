@@ -1,14 +1,13 @@
 package com.mendingnabung.config;
 
 import com.mendingnabung.model.Category;
-import com.mendingnabung.model.item.Item;
 import com.mendingnabung.model.item.BarangPrimer;
 import com.mendingnabung.model.item.BarangSekunder;
 import com.mendingnabung.model.item.BarangTersier;
 import com.mendingnabung.model.user.Customer;
 import com.mendingnabung.repository.CategoryRepository;
-import com.mendingnabung.repository.ItemRepository;
 import com.mendingnabung.repository.CustomerRepository;
+import com.mendingnabung.repository.ItemRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
