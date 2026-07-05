@@ -46,26 +46,71 @@ public class DataSeeder implements CommandLineRunner {
 
         // === ITEMS ===
         // Barang Primer (kebutuhan pokok)
-        itemRepository.save(new BarangPrimer("Beras 5kg", new BigDecimal("75000"), 5, makanan));
-        itemRepository.save(new BarangPrimer("Minyak Goreng 2L", new BigDecimal("35000"), 4, makanan));
-        itemRepository.save(new BarangPrimer("Telur 1kg", new BigDecimal("30000"), 5, makanan));
-        itemRepository.save(new BarangPrimer("Gula Pasir 1kg", new BigDecimal("15000"), 3, makanan));
-        itemRepository.save(new BarangPrimer("Masker Medis 50pcs", new BigDecimal("25000"), 4, kesehatan));
+        BarangPrimer beras = new BarangPrimer("Beras 5kg", new BigDecimal("75000"), 5);
+        beras.setCategory(makanan);
+        itemRepository.save(beras);
+
+        BarangPrimer minyak = new BarangPrimer("Minyak Goreng 2L", new BigDecimal("35000"), 4);
+        minyak.setCategory(makanan);
+        itemRepository.save(minyak);
+
+        BarangPrimer telur = new BarangPrimer("Telur 1kg", new BigDecimal("30000"), 5);
+        telur.setCategory(makanan);
+        itemRepository.save(telur);
+
+        BarangPrimer gula = new BarangPrimer("Gula Pasir 1kg", new BigDecimal("15000"), 3);
+        gula.setCategory(makanan);
+        itemRepository.save(gula);
+
+        BarangPrimer masker = new BarangPrimer("Masker Medis 50pcs", new BigDecimal("25000"), 4);
+        masker.setCategory(kesehatan);
+        itemRepository.save(masker);
 
         // Barang Sekunder
-        itemRepository.save(new BarangSekunder("Kemeja Formal", new BigDecimal("150000"), 3, fashion));
-        itemRepository.save(new BarangSekunder("Sepatu Olahraga", new BigDecimal("350000"), 2, fashion));
-        itemRepository.save(new BarangSekunder("Tas Ransel", new BigDecimal("200000"), 3, fashion));
-        itemRepository.save(new BarangSekunder("Buku Paket Semester 1", new BigDecimal("120000"), 4, pendidikan));
-        itemRepository.save(new BarangSekunder("Helm Standar SNI", new BigDecimal("180000"), 4, transportasi));
+        BarangSekunder kemeja = new BarangSekunder("Kemeja Formal", new BigDecimal("150000"), 3);
+        kemeja.setCategory(fashion);
+        itemRepository.save(kemeja);
+
+        BarangSekunder sepatu = new BarangSekunder("Sepatu Olahraga", new BigDecimal("350000"), 2);
+        sepatu.setCategory(fashion);
+        itemRepository.save(sepatu);
+
+        BarangSekunder tas = new BarangSekunder("Tas Ransel", new BigDecimal("200000"), 3);
+        tas.setCategory(fashion);
+        itemRepository.save(tas);
+
+        BarangSekunder buku = new BarangSekunder("Buku Paket Semester 1", new BigDecimal("120000"), 4);
+        buku.setCategory(pendidikan);
+        itemRepository.save(buku);
+
+        BarangSekunder helm = new BarangSekunder("Helm Standar SNI", new BigDecimal("180000"), 4);
+        helm.setCategory(transportasi);
+        itemRepository.save(helm);
 
         // Barang Tersier
-        itemRepository.save(new BarangTersier("Smartphone X", new BigDecimal("5500000"), 2, elektronik));
-        itemRepository.save(new BarangTersier("Laptop Gaming", new BigDecimal("15000000"), 1, elektronik));
-        itemRepository.save(new BarangTersier("Headphone Wireless", new BigDecimal("750000"), 2, elektronik));
-        itemRepository.save(new BarangTersier("Smartwatch Pro", new BigDecimal("2500000"), 1, elektronik));
-        itemRepository.save(new BarangTersier("Tiket Konser", new BigDecimal("500000"), 3, hiburan));
-        itemRepository.save(new BarangTersier("Kacamata Hitam", new BigDecimal("450000"), 2, fashion));
+        BarangTersier hp = new BarangTersier("Smartphone X", new BigDecimal("5500000"), 2);
+        hp.setCategory(elektronik);
+        itemRepository.save(hp);
+
+        BarangTersier laptop = new BarangTersier("Laptop Gaming", new BigDecimal("15000000"), 1);
+        laptop.setCategory(elektronik);
+        itemRepository.save(laptop);
+
+        BarangTersier headphone = new BarangTersier("Headphone Wireless", new BigDecimal("750000"), 2);
+        headphone.setCategory(elektronik);
+        itemRepository.save(headphone);
+
+        BarangTersier watch = new BarangTersier("Smartwatch Pro", new BigDecimal("2500000"), 1);
+        watch.setCategory(elektronik);
+        itemRepository.save(watch);
+
+        BarangTersier tiket = new BarangTersier("Tiket Konser", new BigDecimal("500000"), 3);
+        tiket.setCategory(hiburan);
+        itemRepository.save(tiket);
+
+        BarangTersier kacamata = new BarangTersier("Kacamata Hitam", new BigDecimal("450000"), 2);
+        kacamata.setCategory(fashion);
+        itemRepository.save(kacamata);
 
         // === CUSTOMER tambahan ===
         if (customerRepository.findByUsername("resan").isEmpty()) {
