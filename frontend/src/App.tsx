@@ -1,6 +1,7 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from './contexts/AuthContext';
+import LandingPage from './pages/LandingPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
@@ -12,7 +13,7 @@ import Navbar from './components/common/Navbar';
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated } = useAuth();
-  return isAuthenticated ? <>{children}</> : <Navigate to="/login" replace />;
+  return isAuthenticated ? <>{children}</> : <Navigate to="/" replace />;
 }
 
 const App: React.FC = () => {
@@ -22,9 +23,9 @@ const App: React.FC = () => {
     <>
       {isAuthenticated && <Navbar />}
       <Routes>
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route path="/" element={<PrivateRoute><DashboardPage /></PrivateRoute>} />
+        <Route path="/" element={isAuthenticated ? <DashboardPage /> : <LandingPage />} />
+        <Route path="/login" element={isAuthenticated ? <Navigate to="/" replace /> : <LoginPage />} />
+        <Route path="/register" element={isAuthenticated ? <Navigate to="/" replace /> : <RegisterPage />} />
         <Route path="/wishlist" element={<PrivateRoute><WishlistPage /></PrivateRoute>} />
         <Route path="/decision" element={<PrivateRoute><DecisionPage /></PrivateRoute>} />
         <Route path="/history" element={<PrivateRoute><HistoryPage /></PrivateRoute>} />
